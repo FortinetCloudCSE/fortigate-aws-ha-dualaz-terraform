@@ -9,12 +9,17 @@ access_key = ""
 secret_key = ""
 
 # Specify the region and AZs to use.
-region = "us-west-1"
-availability_zone1 = "us-west-1a"
-availability_zone2 = "us-west-1b"
+region = "us-east-1"
+availability_zone1 = "us-east-1a"
+availability_zone2 = "us-east-1b"
 
-# To deploy a new TGW and two spoke VPCs, specify 'yes'
-tgw_creation = "yes"
+/*
+To deploy a new TGW and two spoke VPCs, specify 'yes'.
+To deploy a new CWAN and two spoke VPCs, specify 'yes'.
+Only specify yes for tgw_creation or cwan_creation not both.
+*/
+cwan_creation = "no"
+tgw_creation = "no"
 
 # Specify the name of the keypair that the FGTs will use.
 keypair = ""
@@ -23,10 +28,10 @@ keypair = ""
 cidr_for_access = "0.0.0.0/0"
 
 # Specify a tag prefix that will be used to name resources.
-tag_name_prefix = ""
+tag_name_prefix = "poc"
 
-# Specify the FortiOS version to use 7.0, 7.2, or 7.4
-fortios_version = "7.2"
+# Specify the FortiOS version to use 7.2, 7.4, or 7.6
+fortios_version = "7.4"
 
 /*
 For license_type, specify byol, flex, or payg.

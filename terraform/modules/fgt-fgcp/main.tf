@@ -278,9 +278,6 @@ data "template_file" "fgt1_userdata" {
 	license_file = "${path.root}/${var.fgt1_byol_license}"
 	license_token = var.fgt1_fortiflex_token
 	private_ec2_api = var.only_private_ec2_api
-	tgw_creation = var.tgw_creation
-    spoke1_cidr = var.spoke_vpc1_cidr
-    spoke2_cidr = var.spoke_vpc2_cidr
   }
 }
 
@@ -375,8 +372,5 @@ data "template_file" "fgt2_userdata" {
 	license_file = "${path.root}/${var.fgt2_byol_license}"
 	license_token = var.fgt2_fortiflex_token
 	private_ec2_api = var.only_private_ec2_api
-	tgw_creation = var.tgw_creation
-    spoke1_cidr = var.spoke_vpc1_cidr
-    spoke2_cidr = var.spoke_vpc2_cidr
   }
 }
