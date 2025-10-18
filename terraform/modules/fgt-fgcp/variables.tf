@@ -35,6 +35,3 @@ variable "fgt2_public_ip" {}
 variable "fgt2_private_ip" {}
 variable "fgt2_hamgmt_ip" {}
 variable "tag_name_prefix" {}
-variable "spoke_vpc1_cidr" {}
-variable "spoke_vpc2_cidr" {}
-variable "tgw_creation" {}

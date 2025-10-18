@@ -6,8 +6,14 @@ variable "availability_zone2" {}
 variable "vpc_cidr" {}
 variable "private_subnet_cidr1" {}
 variable "private_subnet_cidr2" {}
+variable "tgw_creation" {}
 variable "transit_gateway_id" {}
 variable "tgw_security_route_table_id" {}
 variable "tgw_spoke_route_table_id" {}
 variable "tag_name_prefix" {}
 variable "tag_name_unique" {}
+variable "cwan_creation" {}
+variable "cwan_id" {}
+variable "cwan_arn" {}
+variable "cwan_segment" {}
+variable "cwan_policy_state" {}

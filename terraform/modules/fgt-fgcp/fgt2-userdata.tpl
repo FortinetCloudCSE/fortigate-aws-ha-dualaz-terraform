@@ -16,7 +16,7 @@ set object router.static
 next
 end
 config system global
-set hostname Fgt1
+set hostname Fgt2
 set admintimeout 60
 end
 %{ if private_ec2_api == "true" }
@@ -30,19 +30,19 @@ end
 config system interface
 edit port1
 set mode static
-set ip ${fgt1_public_ip}
+set ip ${fgt2_public_ip}
 set allowaccess https ping ssh fgfm
 set alias public
 next
 edit port2
 set mode static
-set ip ${fgt1_private_ip}
+set ip ${fgt2_private_ip}
 set allowaccess ping
 set alias private
 next
 edit port3
 set mode static
-set ip ${fgt1_hamgmt_ip}
+set ip ${fgt2_hamgmt_ip}
 set allowaccess https ping ssh
 set alias hamgmt
 next
@@ -57,23 +57,26 @@ set device port2
 set dst ${vpc_cidr}
 set gateway ${private_subnet_intrinsic_router_ip}
 next
-%{ if tgw_creation == "yes" }
 edit 3
 set device port2
-set dst ${spoke1_cidr}
+set dst 10.0.0.0/8
 set gateway ${private_subnet_intrinsic_router_ip}
 next
 edit 4
 set device port2
-set dst ${spoke2_cidr}
+set dst 172.16.0.0/12
 set gateway ${private_subnet_intrinsic_router_ip}
 next
-%{ endif }
+edit 5
+set device port2
+set dst 192.166.0.0/16
+set gateway ${private_subnet_intrinsic_router_ip}
+next
 end
 
 config firewall policy
 edit 1
-set name "vpc-internet_access"
+set name "egress_access"
 set srcintf "port2"
 set dstintf "port1"
 set srcaddr "all"
@@ -84,9 +87,8 @@ set service "ALL"
 set logtraffic all
 set nat enable
 next
-%{ if tgw_creation == "yes" }
 edit 2
-set name "vpc-vpc_access"
+set name "east-west_access"
 set srcintf "port2"
 set dstintf "port2"
 set srcaddr "all"
@@ -96,7 +98,6 @@ set schedule "always"
 set service "ALL"
 set logtraffic all
 next
-%{ endif }
 end
 
 config system sdn-connector
@@ -121,9 +122,9 @@ set gateway ${hamgmt_subnet_intrinsic_router_ip}
 next
 end
 set override disable
-set priority 255
+set priority 1
 set unicast-hb enable
-set unicast-hb-peerip ${fgt2_hamgmt_ip}
+set unicast-hb-peerip ${fgt1_hamgmt_ip}
 end
 
 %{ if license_type == "byol" }
