@@ -125,6 +125,9 @@ set override disable
 set priority 1
 set unicast-hb enable
 set unicast-hb-peerip ${fgt1_hamgmt_ip}
+set ha-uptime-diff-margin 60
+set route-ttl 30
+set password ${ha_pass}
 end
 
 %{ if license_type == "byol" }
