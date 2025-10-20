@@ -4,6 +4,13 @@ provider "aws" {
   region = var.region
 }
 
+data "aws_caller_identity" "current" {}
+
+locals {
+  account_id = data.aws_caller_identity.current.account_id
+  account_id_base64 = base64encode(local.account_id)
+}
+
 resource "aws_vpc_endpoint" "ec2_vpcendpoint" {
   count = var.only_private_ec2_api == "true" ? 1 : 0
   service_name = "com.amazonaws.${var.region}.ec2"
@@ -78,18 +85,6 @@ EOF
 variable "fgtami" {
   type = map(any)
   default = {
-    "7.0" = {
-      "arm" = {
-        "byol" = "FortiGate-VMARM64-AWS *(7.0.*)*|33ndn84xbrajb9vmu5lxnfpjq"
-		"flex" = "FortiGate-VMARM64-AWS *(7.0.*)*|33ndn84xbrajb9vmu5lxnfpjq"
-        "payg" = "FortiGate-VMARM64-AWSONDEMAND *(7.0.*)*|8gc40z1w65qjt61p9ps88057n"
-      },
-      "intel" = {
-        "byol" = "FortiGate-VM64-AWS *(7.0.*)*|dlaioq277sglm5mw1y1dmeuqa"
-		"flex" = "FortiGate-VM64-AWS *(7.0.*)*|dlaioq277sglm5mw1y1dmeuqa"
-        "payg" = "FortiGate-VM64-AWSONDEMAND *(7.0.*)*|2wqkpek696qhdeo7lbbjncqli"
-      }
-    },
     "7.2" = {
       "arm" = {
         "byol" = "FortiGate-VMARM64-AWS *(7.2.*)*|33ndn84xbrajb9vmu5lxnfpjq"
@@ -110,8 +105,20 @@ variable "fgtami" {
       },
       "intel" = {
         "byol" = "FortiGate-VM64-AWS *(7.4.*)*|dlaioq277sglm5mw1y1dmeuqa"
-		"flex"  = "FortiGate-VM64-AWS *(7.4.*)*|dlaioq277sglm5mw1y1dmeuqa"
+		"flex" = "FortiGate-VM64-AWS *(7.4.*)*|dlaioq277sglm5mw1y1dmeuqa"
         "payg" = "FortiGate-VM64-AWSONDEMAND *(7.4.*)*|2wqkpek696qhdeo7lbbjncqli"
+      }
+    },
+    "7.6" = {
+      "arm" = {
+        "byol" = "FortiGate-VMARM64-AWS *(7.6.*)*|33ndn84xbrajb9vmu5lxnfpjq"
+		"flex" = "FortiGate-VMARM64-AWS *(7.6.*)*|33ndn84xbrajb9vmu5lxnfpjq"
+        "payg" = "FortiGate-VMARM64-AWSONDEMAND *(7.6.*)*|8gc40z1w65qjt61p9ps88057n"
+      },
+      "intel" = {
+        "byol" = "FortiGate-VM64-AWS *(7.6.*)*|dlaioq277sglm5mw1y1dmeuqa"
+		"flex"  = "FortiGate-VM64-AWS *(7.6.*)*|dlaioq277sglm5mw1y1dmeuqa"
+        "payg" = "FortiGate-VM64-AWSONDEMAND *(7.6.*)*|2wqkpek696qhdeo7lbbjncqli"
       }
     }
   }
@@ -126,8 +133,8 @@ locals {
 }
 
 data "aws_ami" "fortigate_ami" {
-  most_recent      = true
-  owners           = ["aws-marketplace"]
+  most_recent = true
+  owners = ["aws-marketplace"]
 
   filter {
     name   = "name"
@@ -266,6 +273,7 @@ data "template_file" "fgt1_userdata" {
   template = "${file("${path.module}/fgt1-userdata.tpl")}"
   
   vars = {
+    ha_pass = local.account_id_base64
     fgt1_public_ip = var.fgt1_public_ip
     fgt1_private_ip = var.fgt1_private_ip
     fgt1_hamgmt_ip = var.fgt1_hamgmt_ip
@@ -360,6 +368,7 @@ data "template_file" "fgt2_userdata" {
   template = "${file("${path.module}/fgt2-userdata.tpl")}"
   
   vars = {
+    ha_pass = local.account_id_base64
     fgt2_public_ip = var.fgt2_public_ip
     fgt2_private_ip = var.fgt2_private_ip
     fgt2_hamgmt_ip = var.fgt2_hamgmt_ip
