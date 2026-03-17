@@ -126,7 +126,7 @@ variable "fgtami" {
 
 locals {
   instance_family = split(".", "${var.instance_type}")[0]
-  graviton = (local.instance_family == "c6g") || (local.instance_family == "c6gn") || (local.instance_family == "c7g") || (local.instance_family == "c7gn") ? true : false
+  graviton = (local.instance_family == "c6g") || (local.instance_family == "c6gn") || (local.instance_family == "c7g") || (local.instance_family == "c7gn") || (local.instance_family == "c8g") || (local.instance_family == "c8gn") ? true : false
   arch = local.graviton == true ? "arm" : "intel"
   ami_search_string = split("|", "${var.fgtami[var.fortios_version][local.arch][var.license_type]}")[0]
   product_code = split("|", "${var.fgtami[var.fortios_version][local.arch][var.license_type]}")[1]
@@ -217,6 +217,11 @@ resource "aws_network_interface" "fgt1_eni2" {
 
 resource "aws_eip" "fgt1_hamgmt_eip" {
   count = var.only_private_ec2_api == "false" ? 1 : 0
+  depends_on = [
+    aws_eip.fgt1_hamgmt_eip,
+    aws_instance.fgt1,
+    aws_network_interface.fgt2_eni2
+  ]
   domain = "vpc"
   network_interface = aws_network_interface.fgt1_eni2.id
   associate_with_private_ip = element("${split("/", var.fgt1_hamgmt_ip)}", 0)
@@ -226,6 +231,11 @@ resource "aws_eip" "fgt1_hamgmt_eip" {
 }
 
 resource "aws_eip" "cluster_eip" {
+  depends_on = [
+    aws_eip.cluster_eip,
+    aws_instance.fgt1,
+    aws_network_interface.fgt2_eni0
+  ]
   domain = "vpc"
   network_interface = aws_network_interface.fgt1_eni0.id
   associate_with_private_ip = element("${split("/", var.fgt1_public_ip)}", 0)
@@ -321,6 +331,11 @@ resource "aws_network_interface" "fgt2_eni2" {
 
 resource "aws_eip" "fgt2_hamgmt_eip" {
   count = var.only_private_ec2_api == "false" ? 1 : 0
+  depends_on = [
+    aws_eip.fgt2_hamgmt_eip,
+    aws_instance.fgt2,
+    aws_network_interface.fgt2_eni2
+  ]
   domain = "vpc"
   network_interface = aws_network_interface.fgt2_eni2.id
   associate_with_private_ip = element("${split("/", var.fgt2_hamgmt_ip)}", 0)
