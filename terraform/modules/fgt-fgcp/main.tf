@@ -164,6 +164,13 @@ resource "aws_security_group" "secgrp" {
     protocol = "-1"
     cidr_blocks = [var.vpc_cidr]
   }
+  ingress {
+    description = "Allow RFC1918 access to FGT"
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    cidr_blocks = ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
+  }
   egress {
     from_port = 0
     to_port = 0
