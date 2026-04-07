@@ -4,14 +4,19 @@ Any variables in variables.tf can be overriden here.
 Overriding variables here keeps the variables.tf as a clean local reference.
 */
 
-# Provide the credentials to access the AWS account
-access_key = ""
-secret_key = ""
+/*
+Credentials are automatically detected from standard AWS authentication means:
+ - AWS creds file used with AWS CLI (~/.aws/credentials)
+ - Environment variables (AWSACCESSKEYID, AWSSECRETACCESSKEY)
+ - IAM Roles (preferred for EC2, ECS)
+ - AWS SSO (aws sso login)
+For more documentation on how to authenticate, reference the link below: https://registry.terraform.io/providers/hashicorp/aws/latest/docs#authentication-and-configuration
+*/
 
 # Specify the region and AZs to use.
-region = "us-east-1"
-availability_zone1 = "us-east-1a"
-availability_zone2 = "us-east-1b"
+region             = ""
+availability_zone1 = ""
+availability_zone2 = ""
 
 /*
 To deploy a new TGW and two spoke VPCs, specify 'yes'.
@@ -19,7 +24,7 @@ To deploy a new CWAN and two spoke VPCs, specify 'yes'.
 Only specify yes for tgw_creation or cwan_creation not both.
 */
 cwan_creation = "no"
-tgw_creation = "no"
+tgw_creation  = "no"
 
 # Specify the name of the keypair that the FGTs will use.
 keypair = ""
@@ -46,8 +51,8 @@ Otherwise, leave these as empty strings.
 fgt1_fortiflex_token = "1A2B3C4D5E6F7G8H9I0J"
 fgt2_fortiflex_token = "2B3C4D5E6F7G8H9I0J1K"
 */
-license_type = "payg"
-fgt1_byol_license = ""
-fgt2_byol_license = ""
+license_type         = "payg"
+fgt1_byol_license    = ""
+fgt2_byol_license    = ""
 fgt1_fortiflex_token = ""
 fgt2_fortiflex_token = ""

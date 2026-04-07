@@ -10,7 +10,7 @@ output "fgt_login_info" {
 }
 
 output "tgw_info" {
-  value =  var.tgw_creation == "no" ? "tgw_creation = no" : <<-TGWINFO
+  value = var.tgw_creation == "no" ? "tgw_creation = no" : <<-TGWINFO
   # tgw id: ${module.transit-gw[0].tgw_id}
   # tgw spoke route table id: ${module.transit-gw[0].tgw_spoke_route_table_id}
   # tgw security route table id: ${module.transit-gw[0].tgw_security_route_table_id}
@@ -18,7 +18,7 @@ output "tgw_info" {
 }
 
 output "cwan_info" {
-  value =  var.cwan_creation == "no" ? "cwan_creation = no" : <<-CWANINFO
+  value = var.cwan_creation == "no" ? "cwan_creation = no" : <<-CWANINFO
   # cwan id: ${module.cloud-wan[0].cwan_id}
   # cwan arn: ${module.cloud-wan[0].cwan_arn}
   CWANINFO
