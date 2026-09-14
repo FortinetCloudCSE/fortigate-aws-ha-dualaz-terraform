@@ -106,8 +106,15 @@ resource "aws_route_table" "private_rt" {
   }
 }
 
+resource "aws_route" "attachment_rtb_route_to_fgt1" {
+  count                  = var.attachment_creation == 1 ? 1 : 0
+  route_table_id         = aws_route_table.attachment_rt[0].id
+  destination_cidr_block = "0.0.0.0/0"
+  network_interface_id   = var.fgt1_eni1_id
+}
+
 resource "aws_route" "private_rtb_route_to_fgt1" {
-  count                  = var.tgw_creation == 0 ? 1 : 0
+  count                  = var.attachment_creation == 0 ? 1 : 0
   route_table_id         = aws_route_table.private_rt.id
   destination_cidr_block = "0.0.0.0/0"
   network_interface_id   = var.fgt1_eni1_id
@@ -115,22 +122,15 @@ resource "aws_route" "private_rtb_route_to_fgt1" {
 
 resource "aws_route" "private_rtb_route_to_tgw" {
   count                  = var.tgw_creation
-  route_table_id         = aws_route_table.attachment_rt[0].id
+  route_table_id         = aws_route_table.private_rt.id
   destination_cidr_block = "0.0.0.0/0"
   transit_gateway_id     = var.transit_gateway_id
 }
 
-resource "aws_route" "attachment_rtb_route_to_tgw" {
-  count                  = var.tgw_creation
-  route_table_id         = aws_route_table.attachment_rt[0].id
-  destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id     = var.transit_gateway_id
-}
-
-resource "aws_route" "attachment_rtb_route_to_cwan" {
+resource "aws_route" "private_rtb_route_to_cwan" {
   count                  = var.cwan_creation
   depends_on             = [aws_networkmanager_vpc_attachment.cwan_attachment]
-  route_table_id         = aws_route_table.attachment_rt[0].id
+  route_table_id         = aws_route_table.private_rt.id
   destination_cidr_block = "0.0.0.0/0"
   core_network_arn       = var.cwan_arn
 }
