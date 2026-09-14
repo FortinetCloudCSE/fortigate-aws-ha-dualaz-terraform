@@ -72,7 +72,7 @@ set gateway ${private_subnet_intrinsic_router_ip}
 next
 edit 5
 set device port2
-set dst 192.166.0.0/16
+set dst 192.168.0.0/16
 set gateway ${private_subnet_intrinsic_router_ip}
 next
 end
